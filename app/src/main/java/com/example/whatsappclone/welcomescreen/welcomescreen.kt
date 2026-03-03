@@ -1,15 +1,19 @@
 package com.example.whatsappclone.welcomescreen
 
-import android.text.Layout
+//import android.text.Layout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,19 +49,48 @@ fun WelcomeScreen(){
                 fontWeight = FontWeight.Bold
 
             )
+            Spacer(modifier = Modifier.height(24.dp))
             Row {
                 Text(
                     text = "Read our",
                     color = Color.Gray
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = "Privacy Policy",
                     color = colorResource(id = R.color.light_green)
                 )
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = " Tap 'Agree and Continue' to ",
                     color = Color.Gray
+                )
+            }
+            Row {
+                Text(
+                    text = "accept the",
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = " Term of Services",
+                    color = colorResource(id = R.color.light_green)
+
+                )
+                Spacer(modifier = Modifier.size(24.dp))
+            }
+            Button(onClick = {},
+                modifier = Modifier.size(width = 280.dp, height = 43.dp),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id =R.color.Dark_green)
+                )
+            )
+
+            {
+                Text(
+                    text = "Agree and Continues",
+                    fontSize = 16.sp
                 )
             }
     }
