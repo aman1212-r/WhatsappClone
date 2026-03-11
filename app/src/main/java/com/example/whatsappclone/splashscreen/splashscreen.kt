@@ -25,7 +25,8 @@ import androidx.compose.ui.res.colorResource
 @Preview(showSystemUi = true)
 fun SplashScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        Image(painter = painterResource(id = R.drawable.whatsapp_icon),
+        Image(
+            painter = painterResource(id = R.drawable.whatsapp_icon),
             contentDescription = null,
             modifier = Modifier
                 .size(80.dp)
@@ -33,9 +34,10 @@ fun SplashScreen() {
 
         )
 
-        Column(modifier = Modifier
-            .safeContentPadding()
-            .align(Alignment.BottomCenter),
+        Column(
+            modifier = Modifier
+                .safeContentPadding()
+                .align(Alignment.BottomCenter),
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
@@ -50,14 +52,14 @@ fun SplashScreen() {
                     contentDescription = null,
                     modifier = Modifier
                         .size(16.dp),
-                           tint = colorResource(id = R.color.light_green)
+                    tint = colorResource(id = R.color.light_green)
 
                 )
                 Text(
                     text = "Meta",
                     fontSize = 16.sp,
 
-                )
+                    )
             }
         }
     }

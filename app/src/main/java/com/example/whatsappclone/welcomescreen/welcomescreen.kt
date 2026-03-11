@@ -30,12 +30,14 @@ import com.example.whatsappclone.R
 
 @Composable
 @Preview(showSystemUi = true)
-fun WelcomeScreen(){
+fun WelcomeScreen() {
 
-    Column ( modifier = Modifier.fillMaxSize(),
+    Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally)
-        {
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
         Image(
             painter = painterResource(id = R.drawable.whatsapp_sticker),
             contentDescription = null,
@@ -43,55 +45,56 @@ fun WelcomeScreen(){
                 .size(300.dp)
                 .safeContentPadding()
         )
+        Text(
+            text = "Welcome Whatsapp",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Row {
             Text(
-                text = "Welcome Whatsapp",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                text = "Read our",
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = "Privacy Policy",
+                color = colorResource(id = R.color.light_green)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = " Tap 'Agree and Continue' to ",
+                color = Color.Gray
+            )
+        }
+        Row {
+            Text(
+                text = "accept the",
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = " Term of Services",
+                color = colorResource(id = R.color.light_green)
 
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            Row {
-                Text(
-                    text = "Read our",
-                    color = Color.Gray
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "Privacy Policy",
-                    color = colorResource(id = R.color.light_green)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = " Tap 'Agree and Continue' to ",
-                    color = Color.Gray
-                )
-            }
-            Row {
-                Text(
-                    text = "accept the",
-                    color = Color.Gray
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = " Term of Services",
-                    color = colorResource(id = R.color.light_green)
-
-                )
-                Spacer(modifier = Modifier.size(24.dp))
-            }
-            Button(onClick = {},
-                modifier = Modifier.size(width = 280.dp, height = 43.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id =R.color.Dark_green)
-                )
+            Spacer(modifier = Modifier.size(24.dp))
+        }
+        Button(
+            onClick = {},
+            modifier = Modifier.size(width = 280.dp, height = 43.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(id = R.color.Dark_green)
             )
+        )
 
-            {
-                Text(
-                    text = "Agree and Continues",
-                    fontSize = 16.sp
-                )
-            }
+        {
+            Text(
+                text = "Agree and Continues",
+                fontSize = 16.sp
+            )
+        }
     }
 }
