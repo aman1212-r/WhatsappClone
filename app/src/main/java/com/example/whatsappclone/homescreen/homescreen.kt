@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,10 +27,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.whatsappclone.chat_box.ChatDesignModel
 
 @Composable
 @Preview(showSystemUi = true)
 fun Homescreen() {
+
+    val chatData = listOf(
+        ChatDesignModel(
+            R.drawable.profile_picture,
+            name = "Salman khan",
+            time = "10:00Am",
+            message = "hi",
+        ),
+        ChatDesignModel(
+            R.drawable.rashmika,
+            name = "Rashmi",
+            time = "9:00",
+            message = "hello",
+        ),
+        ChatDesignModel(
+            R.drawable.sharukh_khan,
+            name = "sharukh khan",
+            time = "11:00",
+            message = "What are you doing?",
+        ),
+        ChatDesignModel(
+            R.drawable.tripti_dimri,
+            name = "Tripti",
+            time = "12:00",
+            message = "hey yoo .",
+        )
+    )
 
 
     // floating button
@@ -103,6 +133,12 @@ fun Homescreen() {
             //lazy column gives the vertical scroll features
 
             HorizontalDivider()
+
+            LazyColumn() {
+                items(chatData){
+                    ChatDesign(chatDesignModel = it)
+                }
+            }
         }
     }
 }
