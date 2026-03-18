@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.whatsappclone.BottomNavigation.BottomNavigation
 import com.example.whatsappclone.chat_box.ChatDesignModel
 
 @Composable
@@ -47,8 +48,8 @@ fun Homescreen() {
             message = "hello",
         ),
         ChatDesignModel(
-            R.drawable.sharukh_khan,
-            name = "sharukh khan",
+            R.drawable.rajkummar_rao,
+            name = "Rajkumar rao",
             time = "11:00",
             message = "What are you doing?",
         ),
@@ -73,11 +74,14 @@ fun Homescreen() {
 
 
                 Icon(
-                    painter = painterResource(id = R.drawable.chat_icon),
+                    painter = painterResource(id = R.drawable.add_chat_icon),
                     contentDescription = null,
                     modifier = Modifier.size(26.dp),
                 )
             }
+        },
+        bottomBar = {
+            BottomNavigation()
         }
     )
     {
@@ -135,7 +139,7 @@ fun Homescreen() {
             HorizontalDivider()
 
             LazyColumn() {
-                items(chatData){
+                items(chatData) {
                     ChatDesign(chatDesignModel = it)
                 }
             }
