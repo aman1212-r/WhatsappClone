@@ -137,6 +137,7 @@ fun Homescreen() {
             //lazy column gives the vertical scroll features
 
             HorizontalDivider()
+            HorizontalDivider()
 
             LazyColumn() {
                 items(chatData) {
