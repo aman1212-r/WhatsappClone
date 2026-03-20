@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.whatsappclone.BottomNavigation.BottomNavigation
+import com.example.whatsappclone.bottomnavigation.BottomNavigation
 import com.example.whatsappclone.chat_box.ChatDesignModel
 
 @Composable

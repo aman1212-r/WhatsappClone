@@ -1,24 +1,8 @@
 package com.example.whatsappclone.updatescreen
 
-
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -32,16 +16,9 @@ import com.example.whatsappclone.R
 @Preview(showSystemUi = true)
 fun TopBar() {
 
-    var isSearching by remember {
-
-        mutableStateOf(false
-        )
-    }
-
-    var search by remember {
-
-        mutableStateOf("")
-    }
+    var isSearching by remember { mutableStateOf(false) }
+    var search by remember { mutableStateOf("") }
+    var showMenu by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -51,54 +28,113 @@ fun TopBar() {
 
         Column {
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+            ) {
 
+                // 🔍 Search Field OR Title
                 if (isSearching) {
                     TextField(
-                        value = search, onValueChange = {
-                        search = it
-                    }, placeholder = {
-                        Text(
-                            text = "Search"
-                        )
-                    }, colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ), modifier = Modifier.padding(12.dp),
+                        value = search,
+                        onValueChange = { search = it },
+                        placeholder = { Text("Search") },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        modifier = Modifier.weight(1f),
                         singleLine = true
                     )
-                }
-                else{
+                } else {
                     Text(
-                        text = "updates",
+                        text = "Updates",
                         fontSize = 28.sp,
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(12.dp, top = 4.dp)
+                        modifier = Modifier.padding(start = 8.dp)
                     )
                 }
+
                 Spacer(modifier = Modifier.weight(1f))
 
-                if (isSearching){
-                    IconButton(onClick = { }) {
+                //  ICONS CONTROL
+                if (isSearching) {
 
+                    //  ONLY CROSS ICON
+                    IconButton(onClick = {
+                        isSearching = false
+                        search = ""
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.cross),
-                            contentDescription = null,
+                            contentDescription = "Close",
                             modifier = Modifier
-                                .size(15.dp),
+                                .size(24.dp)
                         )
                     }
-                }else{
-                    Icon(painter = painterResource(R.drawable.camera),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp))
-                }
 
+                } else {
+
+                    //  CAMERA
+                    IconButton(onClick = { }) {
+                        Icon(
+                            painter = painterResource(R.drawable.camera),
+                            contentDescription = "Camera",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    //  SEARCH
+                    IconButton(onClick = { isSearching = true }) {
+                        Icon(
+                            painter = painterResource(R.drawable.search),
+                            contentDescription = "Search",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    //  MORE MENU
+                    IconButton(onClick = {
+
+                        showMenu = true
+                    }) {
+
+                        
+                        Icon(
+                            painter = painterResource(R.drawable.more),
+                            contentDescription = "More",
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Status Privacy") },
+                                onClick = { showMenu = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Create channel") },
+                                onClick = { showMenu = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Settings") },
+                                onClick = { showMenu = false }
+                            )
+                        }
+                    }
+
+                }
             }
+
+            //  Divider
+            HorizontalDivider()
         }
     }
-
 }

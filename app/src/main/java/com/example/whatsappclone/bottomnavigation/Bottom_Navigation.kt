@@ -1,4 +1,4 @@
-package com.example.whatsappclone.BottomNavigation
+package com.example.whatsappclone.bottomnavigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

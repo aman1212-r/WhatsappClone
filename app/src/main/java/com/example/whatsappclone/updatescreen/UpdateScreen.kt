@@ -13,7 +13,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.whatsappclone.BottomNavigation.BottomNavigation
+import com.example.whatsappclone.bottomnavigation.BottomNavigation
 import com.example.whatsappclone.R
 
 @Composable
