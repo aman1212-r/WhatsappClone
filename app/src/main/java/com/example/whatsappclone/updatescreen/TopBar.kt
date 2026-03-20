@@ -35,7 +35,7 @@ fun TopBar() {
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
 
-                // 🔍 Search Field OR Title
+                //  Search Field OR Title
                 if (isSearching) {
                     TextField(
                         value = search,
@@ -104,7 +104,7 @@ fun TopBar() {
                         showMenu = true
                     }) {
 
-                        
+
                         Icon(
                             painter = painterResource(R.drawable.more),
                             contentDescription = "More",

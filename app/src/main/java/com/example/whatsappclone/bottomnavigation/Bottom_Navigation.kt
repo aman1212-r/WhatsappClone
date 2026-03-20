@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -29,8 +30,11 @@ fun BottomNavigation() {
         tonalElevation = 12.dp,
         containerColor = Color.White
     ) {
-        Row (modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween){
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .statusBarsPadding(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
