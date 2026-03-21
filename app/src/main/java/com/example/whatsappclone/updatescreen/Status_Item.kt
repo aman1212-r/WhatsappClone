@@ -35,7 +35,7 @@ fun MyStatus() {
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -82,6 +82,7 @@ data class StatusData(
 
 )
 
+
 @Composable
 fun StatusItem(data: StatusData) {
 
@@ -89,7 +90,7 @@ fun StatusItem(data: StatusData) {
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

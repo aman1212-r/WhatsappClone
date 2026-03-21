@@ -2,12 +2,10 @@ package com.example.whatsappclone.updatescreen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,7 +20,7 @@ import com.example.whatsappclone.R
 fun UpdateScreen() {
 
     val sampleStatus = listOf(
-        StatusData(R.drawable.bhuvan_bam, "Bhuvan Bam", "10:00"),
+        StatusData(R.drawable.bhuvan_bam, "Bhumi Bam", "10:00"),
         StatusData(R.drawable.rashmika, "Rashmi", "11:00"),
         StatusData(R.drawable.rajkummar_rao, "Rajkumar Rao", "12:00"),
     )
