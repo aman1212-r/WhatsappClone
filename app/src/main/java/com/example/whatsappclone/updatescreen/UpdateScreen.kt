@@ -53,7 +53,7 @@ fun UpdateScreen() {
 
         LazyColumn(
             modifier = Modifier
-                .padding(innerPadding)
+                .padding( innerPadding)
                 .fillMaxSize()
         ) {
 
