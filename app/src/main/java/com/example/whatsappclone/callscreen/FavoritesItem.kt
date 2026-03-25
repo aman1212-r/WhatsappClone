@@ -23,9 +23,10 @@ import androidx.compose.ui.unit.sp
 import com.example.whatsappclone.R
 
 
-@Preview(showSystemUi = true)
 @Composable
-fun FavoritesSection() {
+fun FavoritesItem(
+    favoriteContact: FavoriteContact
+) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -36,7 +37,7 @@ fun FavoritesSection() {
     ) {
 
         Image(
-            painter = painterResource(R.drawable.rajkummar_rao),
+            painter = painterResource(favoriteContact.image),
             contentDescription = null,
             modifier = Modifier
                 .size(60.dp)
@@ -50,7 +51,7 @@ fun FavoritesSection() {
 
 
         Text(
-            text = "Rajkumar rao",
+            text = favoriteContact.name,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             color = Color.Black
