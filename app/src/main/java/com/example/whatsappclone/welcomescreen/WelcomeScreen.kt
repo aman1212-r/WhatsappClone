@@ -22,21 +22,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 import com.example.whatsappclone.R
+import com.example.whatsappclone.navigation.Routes
 
 @Composable
-@Preview(showSystemUi = true)
-fun WelcomeScreen() {
+fun WelcomeScreen(navHostController: NavHostController) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     )
+
     {
         Image(
             painter = painterResource(id = R.drawable.whatsapp_sticker),
@@ -51,7 +52,11 @@ fun WelcomeScreen() {
             fontWeight = FontWeight.Bold
 
         )
+
         Spacer(modifier = Modifier.height(24.dp))
+
+
+
         Row {
             Text(
                 text = "Read our",
@@ -81,8 +86,11 @@ fun WelcomeScreen() {
             )
             Spacer(modifier = Modifier.size(24.dp))
         }
+
+
+        //Button to navigate to UserRegistrationScreen
         Button(
-            onClick = {},
+            onClick = { navHostController.navigate(Routes.UserRegistrationScreen) },
             modifier = Modifier.size(width = 280.dp, height = 43.dp),
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
