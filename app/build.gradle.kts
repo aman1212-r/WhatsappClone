@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 
     kotlin("plugin.serialization") version "2.2.10"
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.google.gms.google.services)
+
 }
 
 android {
@@ -46,6 +50,9 @@ android {
 dependencies {
 
 
+    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-auth")
     // navigation
     val navVersion = "2.9.7"
     implementation("androidx.navigation:navigation-compose:$navVersion")
@@ -72,4 +79,12 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.59.2")
+    ksp("com.google.dagger:hilt-compiler:2.59.2")
+
+    //Hilt ViewModel
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
 }
