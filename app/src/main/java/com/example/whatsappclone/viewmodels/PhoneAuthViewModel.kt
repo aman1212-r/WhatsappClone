@@ -152,7 +152,6 @@ class PhoneAuthViewModel @Inject constructor(
 
     }
 
-    //
     // 👾OTP verification
 
     fun verifyCode(otp: String, context: Context) {
@@ -161,7 +160,7 @@ class PhoneAuthViewModel @Inject constructor(
 
         if (currentAuthState !is AuthState.CodeSent || currentAuthState.verificationId.isEmpty()) {
 
-         Log.e("PhoneAuth" , "Attempting to verify OTP without a valid verification ID")
+            Log.e("PhoneAuth", "Attempting to verify OTP without a valid verification ID")
 
             _authState.value = AuthState.Error("Invalid verification ID")
             return
