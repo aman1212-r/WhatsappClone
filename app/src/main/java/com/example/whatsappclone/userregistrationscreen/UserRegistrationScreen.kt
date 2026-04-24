@@ -19,7 +19,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -35,14 +34,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.whatsappclone.R
+import com.example.whatsappclone.viewmodels.PhoneAuthViewModel
 
 @Composable
-@Preview(showSystemUi = true)
-fun UserRegistrationScreen() {
+fun UserRegistrationScreen(navController: NavHostController, PhoneAuthViewModel: PhoneAuthViewModel = hiltViewModel()) {
 
     var expanded by remember { mutableStateOf(false) }
     var selectedCountry by remember { mutableStateOf("India") }
