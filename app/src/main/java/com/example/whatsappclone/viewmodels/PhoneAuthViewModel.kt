@@ -75,8 +75,11 @@ class PhoneAuthViewModel @Inject constructor(
         // tells firebase when we need to send the OTP.
 
 
-        val phoneAuthOptions = PhoneAuthOptions.newBuilder(firebaseAuth).setPhoneNumber(phoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS).setActivity(activity).setCallbacks(option).build()
+        val phoneAuthOptions = PhoneAuthOptions.newBuilder(firebaseAuth)
+            .setPhoneNumber(phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(activity)
+            .setCallbacks(option).build()
 
         PhoneAuthProvider.verifyPhoneNumber(phoneAuthOptions)
 
@@ -88,33 +91,36 @@ class PhoneAuthViewModel @Inject constructor(
         _authState.value = AuthState.Loading
 
 
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
 
-            if (task.isSuccessful) {
-                val user = firebaseAuth.currentUser
-                val phoneAuthUser = PhoneAuthUser(
+                if (task.isSuccessful) {
+                    val user = firebaseAuth.currentUser
+                    val phoneAuthUser = PhoneAuthUser(
 
-                    // if user is null and user id is null then it store empty String
+                        // if user is null and user id is null then it store empty String
 
-                    userId = user?.uid ?: "",
-                    phoneNumber = user?.phoneNumber ?: "",
-                )
+                        userId = user?.uid ?: "",
+                        phoneNumber = user?.phoneNumber ?: "",
+                    )
 
-                // we can check if user open WhatsApp for first time the UserRegistrationScreen
-                // will show and user is already register then we have to pass this screen
+                    // we can check if user open WhatsApp for first time the UserRegistrationScreen
+                    // will show and user is already register then we have to pass this screen
 
-                markUserAsSignedIn(context)
-                _authState.value = AuthState.Success(phoneAuthUser)
+                    markUserAsSignedIn(context)
+                    _authState.value = AuthState
+                        .Success(phoneAuthUser)
 
-                fetchUserProfile(user?.uid ?: "")
-
-
-            } else {
+                    fetchUserProfile(user?.uid ?: "")
 
 
-                _authState.value = AuthState.Error("Sign-in failed")
+                } else {
+
+
+                    _authState.value = AuthState
+                        .Error("Sign-in failed")
+                }
             }
-        }
     }
 
 
@@ -122,8 +128,10 @@ class PhoneAuthViewModel @Inject constructor(
     // we can use anny app data with Context
     fun markUserAsSignedIn(context: Context) {
 
-        val sharedPreferences = context.getSharedPreferences("user_data", Context.MODE_PRIVATE)
-        sharedPreferences.edit().putBoolean("isSignedIn", true).apply()
+        val sharedPreferences = context
+            .getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        sharedPreferences.edit()
+            .putBoolean("isSignedIn", true).apply()
     }
 
 
@@ -215,7 +223,8 @@ class PhoneAuthViewModel @Inject constructor(
     fun signOut(activity: Activity) {
         firebaseAuth.signOut()
         val sharedPreference = activity.getSharedPreferences("app_Prefs", Activity.MODE_PRIVATE)
-        sharedPreference.edit().putBoolean("isSignedIn", false).apply()
+        sharedPreference.edit()
+            .putBoolean("isSignedIn", false).apply()
     }
 
 
