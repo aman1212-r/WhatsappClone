@@ -3,6 +3,7 @@ package com.example.whatsappclone.userregistrationscreen
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,21 +17,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,10 +50,13 @@ import com.example.whatsappclone.viewmodels.AuthState
 import com.example.whatsappclone.viewmodels.PhoneAuthViewModel
 
 @Composable
-fun UserRegistrationScreen(navController: NavHostController) {
-    val phoneAuthViewModel: PhoneAuthViewModel = hiltViewModel()
-    val context = LocalContext.current
+fun UserRegistrationScreen(
+    navController: NavHostController,
+    phoneAuthViewModel: PhoneAuthViewModel = hiltViewModel()
+) {
     val authState by phoneAuthViewModel.authState.collectAsState()
+    val context = LocalContext.current
+    val activity = context.findActivity()
 
     var expanded by remember { mutableStateOf(false) }
     var selectedCountry by remember { mutableStateOf("India") }
@@ -61,18 +64,12 @@ fun UserRegistrationScreen(navController: NavHostController) {
     var phoneNumber by remember { mutableStateOf("") }
     var otp by remember { mutableStateOf("") }
 
-    val isCodeSent = authState is AuthState.CodeSent
     val isLoading = authState is AuthState.Loading
+    val isCodeSent = authState is AuthState.CodeSent
     val errorMessage = (authState as? AuthState.Error)?.message
 
     LaunchedEffect(Unit) {
         phoneAuthViewModel.resetAuthState()
-    }
-
-    LaunchedEffect(isCodeSent) {
-        if (!isCodeSent) {
-            otp = ""
-        }
     }
 
     Column(
@@ -82,7 +79,6 @@ fun UserRegistrationScreen(navController: NavHostController) {
             .padding(horizontal = 24.dp, vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
             text = "Enter your phone number",
             fontSize = 20.sp,
@@ -116,19 +112,17 @@ fun UserRegistrationScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-
             TextButton(
                 onClick = { expanded = true },
                 modifier = Modifier.fillMaxWidth()
             ) {
-
                 Box(modifier = Modifier.fillMaxWidth()) {
-
                     Text(
                         text = selectedCountry,
                         modifier = Modifier.align(Alignment.Center),
                         fontSize = 16.sp,
-                        color = Color.Black
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
                     )
 
                     androidx.compose.material3.Icon(
@@ -144,7 +138,6 @@ fun UserRegistrationScreen(navController: NavHostController) {
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-
                 val countries = listOf(
                     "India" to "+91",
                     "USA" to "+1",
@@ -153,7 +146,6 @@ fun UserRegistrationScreen(navController: NavHostController) {
                 )
 
                 countries.forEach { (country, code) ->
-
                     DropdownMenuItem(
                         text = { Text(country) },
                         onClick = {
@@ -168,169 +160,162 @@ fun UserRegistrationScreen(navController: NavHostController) {
 
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = 52.dp),
-            color = colorResource(R.color.light_green),
+            color = colorResource(id = R.color.light_green),
             thickness = 1.dp
         )
 
         Spacer(modifier = Modifier.height(18.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                TextField(
-                    value = countryCode,
-                    onValueChange = { countryCode = it },
-                    modifier = Modifier.width(76.dp),
-                    singleLine = true,
-                    textStyle = LocalTextStyle.current.copy(
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center
-                    ),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = colorResource(R.color.light_green),
-                        focusedIndicatorColor = colorResource(R.color.light_green)
-                    )
+            TextField(
+                value = countryCode,
+                onValueChange = { countryCode = it },
+                modifier = Modifier.width(76.dp),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedIndicatorColor = colorResource(id = R.color.light_green)
                 )
+            )
 
-                Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
-                TextField(
-                    value = phoneNumber,
-                    onValueChange = { phoneNumber = it.filter(Char::isDigit) },
-                    placeholder = {
-                        Text(
-                            text = "phone number",
-                            fontSize = 14.sp
-                        )
-                    },
-                    singleLine = true,
-                    modifier = Modifier.weight(1f),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = colorResource(R.color.light_green),
-                        focusedIndicatorColor = colorResource(R.color.light_green)
+            TextField(
+                value = phoneNumber,
+                onValueChange = { phoneNumber = it.filter(Char::isDigit) },
+                placeholder = {
+                    Text(
+                        text = "Phone Number",
+                        fontSize = 14.sp
                     )
+                },
+                singleLine = true,
+                modifier = Modifier.weight(1f),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedIndicatorColor = colorResource(id = R.color.light_green)
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Carrier charges may apply",
+            fontSize = 12.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = {
+                if (phoneNumber.isBlank()) {
+                    Toast.makeText(context, "Please enter phone number", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+
+                if (activity != null) {
+                    phoneAuthViewModel.sendVerificationCode(
+                        phoneNumber = "$countryCode$phoneNumber",
+                        activity = activity
+                    )
+                }
+            },
+            shape = RoundedCornerShape(6.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(id = R.color.Dark_green)
+            ),
+            enabled = !isLoading,
+            modifier = Modifier.width(140.dp)
+        ) {
+            if (isLoading && !isCodeSent) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    strokeWidth = 2.dp,
+                    modifier = Modifier.width(18.dp)
+                )
+            } else {
+                Text(
+                    text = "Send OTP",
+                    fontSize = 16.sp
                 )
             }
+        }
 
-            Spacer(modifier = Modifier.height(20.dp))
+        if (isCodeSent) {
+            Spacer(modifier = Modifier.height(40.dp))
 
             Text(
-                text = "Carrier charges may apply",
-                fontSize = 12.sp,
-                color = Color.Gray,
+                text = "Enter Otp",
+                fontSize = 20.sp,
+                color = colorResource(id = R.color.Dark_green),
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            TextField(
+                value = otp,
+                onValueChange = { otp = it.filter(Char::isDigit) },
+                placeholder = {
+                    Text(
+                        text = "OTP",
+                        fontSize = 14.sp
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedIndicatorColor = colorResource(id = R.color.light_green)
+                )
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
-                    val activity = context.findActivity()
-                    if (activity != null && phoneNumber.isNotBlank()) {
-                        phoneAuthViewModel.senVerificationCode(
-                            phoneNumber = "$countryCode$phoneNumber",
-                            activity = activity
-                        )
+                    if (otp.isBlank()) {
+                        Toast.makeText(context, "Please enter OTP", Toast.LENGTH_SHORT).show()
+                        return@Button
                     }
+                    phoneAuthViewModel.verifyCode(otp, context)
                 },
                 shape = RoundedCornerShape(6.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.light_green)
+                    containerColor = colorResource(id = R.color.Dark_green)
                 ),
-                enabled = phoneNumber.isNotBlank() && !isLoading,
+                enabled = !isLoading,
                 modifier = Modifier.width(140.dp)
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        color = Color.White,
-                        strokeWidth = 2.dp,
-                        modifier = Modifier.width(18.dp)
-                    )
-                } else {
-                    Text(
-                        text = "Send OTP",
-                        fontSize = 16.sp
-                    )
-                }
-            }
-
-            if (isCodeSent) {
-                Spacer(modifier = Modifier.height(36.dp))
-
                 Text(
-                    text = "Enter OTP",
-                    fontSize = 20.sp,
-                    color = colorResource(id = R.color.Dark_green),
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                TextField(
-                    value = otp,
-                    onValueChange = { otp = it.filter(Char::isDigit) },
-                    placeholder = {
-                        Text(
-                            text = "OTP",
-                            fontSize = 14.sp
-                        )
-                    },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = colorResource(R.color.light_green),
-                        focusedIndicatorColor = colorResource(R.color.light_green)
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = {
-                        if (otp.isNotBlank()) {
-                            phoneAuthViewModel.verifyCode(otp, context)
-                        }
-                    },
-                    shape = RoundedCornerShape(6.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.light_green)
-                    ),
-                    enabled = otp.isNotBlank() && !isLoading,
-                    modifier = Modifier.width(140.dp)
-                ) {
-                    Text(
-                        text = "Verify OTP",
-                        fontSize = 16.sp
-                    )
-                }
-            }
-
-            if (errorMessage != null) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = errorMessage,
-                    fontSize = 12.sp,
-                    color = Color.Red,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    text = "Verify Otp",
+                    fontSize = 16.sp
                 )
             }
+        }
+
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = errorMessage,
+                fontSize = 12.sp,
+                color = Color.Red,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
