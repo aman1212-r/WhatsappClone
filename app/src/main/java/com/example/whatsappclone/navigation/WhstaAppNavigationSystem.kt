@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.whatsappclone.callscreen.CallScreen
 import com.example.whatsappclone.communitiesscreen.CommunitiesScreen
 import com.example.whatsappclone.homescreen.Homescreen
+import com.example.whatsappclone.profile.ProfileScreen
 import com.example.whatsappclone.splashscreen.SplashScreen
 import com.example.whatsappclone.updatescreen.UpdateScreen
 import com.example.whatsappclone.userregistrationscreen.UserRegistrationScreen
@@ -48,6 +49,10 @@ fun WhatsAppNavigationSystem() {
 
         composable<Routes.CallScreen> {
             CallScreen()
+        }
+
+        composable<Routes.ProfileScreen> {
+            ProfileScreen(navHostController = navController )
         }
 
 
