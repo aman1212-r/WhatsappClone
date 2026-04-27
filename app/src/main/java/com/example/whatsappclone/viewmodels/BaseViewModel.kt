@@ -1,7 +1,6 @@
 package com.example.whatsappclone.viewmodels
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.whatsappclone.chat_box.ChatDesignModel
 import com.google.firebase.auth.FirebaseAuth
@@ -9,9 +8,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class BaseViewModel : ViewModel() {
 
+    // SearchUserByPhoneNumber Function
 
     fun searchUserByPhoneNumber(
         phoneNumber: String, callback: (ChatDesignModel?) -> Unit
@@ -34,27 +36,31 @@ class BaseViewModel : ViewModel() {
                     if (snapshot.exists()) {
 
                         val user = snapshot.children.first().getValue(ChatDesignModel::class.java)
+
                         callback(user)
 
                     } else {
                         callback(null)
-
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("BaseViewModel", "Error Fetching User: ${error.details} ")
-
+                    Log.e(
+                        "BaseViewModel", "Error Fetching User: ${error.details}"
+                    )
                     callback(null)
                 }
-
             })
     }
 
+    // GetChatForUser Function
 
-    fun getChatForUser(userId: String, callback: (List<ChatDesignModel>) -> Unit) {
+    fun getChatForUser(
+        userId: String, callback: (List<ChatDesignModel>) -> Unit
+    ) {
 
         val chatref = FirebaseDatabase.getInstance().getReference("users/$userId/chats")
+
         chatref.orderByChild("userId").equalTo(userId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
 
@@ -66,22 +72,80 @@ class BaseViewModel : ViewModel() {
 
                         val chat = childsnapshot.getValue(ChatDesignModel::class.java)
 
-                        if (chat != null)
+                        if (chat != null) {
                             chatList.add(chat)
-
+                        }
                     }
 
                     callback(chatList)
+                    _chatList.value = chatList
                 }
 
                 override fun onCancelled(error: DatabaseError) {
 
-                    Log.e("BaseViewModel", "Error Fetching Chats: ${error.message}")
+                    Log.e(
+                        "BaseViewModel", "Error Fetching Chats: ${error.message}"
+                    )
+
                     callback(emptyList())
                 }
-
-
             })
+    }
+
+    private val _chatList = MutableStateFlow<List<ChatDesignModel>>(emptyList())
+
+    val chatList = _chatList.asStateFlow()
+
+    init {
+        loadChatData()
+
+    }
+
+
+    //loadChatData function
+
+
+    private fun loadChatData() {
+
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (currentUserId != null) {
+
+            val chatRef = FirebaseDatabase.getInstance().getReference("chats")
+
+            chatRef.orderByChild("userId").equalTo(currentUserId)
+                .addValueEventListener(object : ValueEventListener {
+
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        val chatList = mutableListOf<ChatDesignModel>()
+                        for (childSnapshot in snapshot.children) {
+
+
+                            val chat = childSnapshot.getValue(ChatDesignModel::class.java)
+
+                            if (chat != null) {
+
+                                chatList.add(chat)
+
+                            }
+                        }
+
+                        _chatList.value = chatList
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+
+                        Log.e(
+                            "BaseViewModel", "Error Fetching Chats: ${error.message}"
+                        )
+
+                    }
+
+
+                })
+
+        }
 
 
     }
