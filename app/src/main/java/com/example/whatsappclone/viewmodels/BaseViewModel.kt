@@ -1,6 +1,7 @@
 package com.example.whatsappclone.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.whatsappclone.chat_box.ChatDesignModel
 import com.google.firebase.auth.FirebaseAuth
@@ -11,9 +12,9 @@ import com.google.firebase.database.ValueEventListener
 
 class BaseViewModel : ViewModel() {
 
+
     fun searchUserByPhoneNumber(
-        phoneNumber: String,
-        callback: (ChatDesignModel?) -> Unit
+        phoneNumber: String, callback: (ChatDesignModel?) -> Unit
     ) {
 
         val currentUser = FirebaseAuth.getInstance().currentUser
@@ -42,18 +43,46 @@ class BaseViewModel : ViewModel() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("BaseViewModel" , "Error Fetching User: ${error.details} ")
+                    Log.e("BaseViewModel", "Error Fetching User: ${error.details} ")
 
                     callback(null)
                 }
 
-            }
-            )
+            })
     }
 
-    fun getChatForUser (userId: String , callback: (List<ChatDesignModel>) -> Unit){
+
+    fun getChatForUser(userId: String, callback: (List<ChatDesignModel>) -> Unit) {
 
         val chatref = FirebaseDatabase.getInstance().getReference("users/$userId/chats")
+        chatref.orderByChild("userId").equalTo(userId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    val chatList = mutableListOf<ChatDesignModel>()
+
+                    for (childsnapshot in snapshot.children) {
+
+                        val chat = childsnapshot.getValue(ChatDesignModel::class.java)
+
+                        if (chat != null)
+                            chatList.add(chat)
+
+                    }
+
+                    callback(chatList)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                    Log.e("BaseViewModel", "Error Fetching Chats: ${error.message}")
+                    callback(emptyList())
+                }
+
+
+            })
+
 
     }
 }
