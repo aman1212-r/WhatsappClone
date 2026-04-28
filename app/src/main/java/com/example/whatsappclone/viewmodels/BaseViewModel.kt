@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.whatsappclone.chat_box.ChatDesignModel
 import com.example.whatsappclone.models.Message
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -156,8 +157,7 @@ class BaseViewModel : ViewModel() {
 
         if (currentUserId != null) {
 
-            val newChatRef = FirebaseDatabase.getInstance().getReference("chats")
-                .push()
+            val newChatRef = FirebaseDatabase.getInstance().getReference("chats").push()
             val chatWithUser = newChat.copy(currentUserId)
 
             newChatRef.setValue(chatWithUser).addOnSuccessListener {
@@ -191,21 +191,55 @@ class BaseViewModel : ViewModel() {
 
         //database for sender
 
-        databaseReference.child("messages")
-            .child(senderPhoneNumber)
-            .child(receiverPhoneNumber)
-            .child(messageId)
-            .setValue(message)
-
+        databaseReference.child("messages").child(senderPhoneNumber).child(receiverPhoneNumber)
+            .child(messageId).setValue(message)
 
 
         //database for receiver
 
-        databaseReference.child("messages")
-            .child(receiverPhoneNumber)
-            .child(senderPhoneNumber)
-            .child(messageId)
-            .setValue(message)
+        databaseReference.child("messages").child(receiverPhoneNumber).child(senderPhoneNumber)
+            .child(messageId).setValue(message)
     }
 
+
+    // get message function
+
+    fun getMessage(
+        senderPhoneNumber: String, receiverPhoneNumber: String, onNewMessage: (Message) -> Unit
+    ) {
+
+        val messageRef =
+            databaseReference.child("messages").child(senderPhoneNumber).child(receiverPhoneNumber)
+
+        messageRef.addChildEventListener(object : ChildEventListener {
+
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+
+                val message = snapshot.getValue(Message::class.java)
+                if (message != null) {
+                    onNewMessage(message)
+                }
+
+
+            }
+
+            override fun onChildChanged(
+                p0: DataSnapshot, p1: String?
+            ) {
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+
+            override fun onChildMoved(
+                p0: DataSnapshot, p1: String?
+            ) {
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+        })
+
+    }
 }
