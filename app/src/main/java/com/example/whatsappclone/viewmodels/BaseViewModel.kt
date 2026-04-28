@@ -179,7 +179,11 @@ class BaseViewModel : ViewModel() {
 
     private val databaseReference = FirebaseDatabase.getInstance().reference
 
-    fun sendMessage(senderPhoneNumber: String, receiverPhoneNumber: String, messageText: String) {
+    fun sendMessage(
+        senderPhoneNumber: String,
+        receiverPhoneNumber: String,
+        messageText: String
+    ) {
 
         val messageId = databaseReference.push().key ?: return
 
@@ -205,7 +209,9 @@ class BaseViewModel : ViewModel() {
     // get message function
 
     fun getMessage(
-        senderPhoneNumber: String, receiverPhoneNumber: String, onNewMessage: (Message) -> Unit
+        senderPhoneNumber: String,
+        receiverPhoneNumber: String,
+        onNewMessage: (Message) -> Unit
     ) {
 
         val messageRef =
@@ -241,5 +247,51 @@ class BaseViewModel : ViewModel() {
 
         })
 
+    }
+
+
+    // fetch last message for chat function
+
+    fun fetchLastMessageForChat(
+        senderPhoneNumber: String,
+        receiverPhoneNumber: String,
+        onLastMessageFetched: (String, String) -> Unit
+
+    ) {
+
+        val chatRef = FirebaseDatabase.getInstance().reference
+            .child("messages")
+            .child(senderPhoneNumber)
+            .child(receiverPhoneNumber)
+
+        chatRef.orderByChild("timestamp")
+            .limitToLast(1)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    if (snapshot.exists()) {
+
+                        val lastMessage =
+                            snapshot.children.firstOrNull()?.child("messages")?.value as? String
+
+                        val timestamp =
+                            snapshot.children.firstOrNull()?.child("timestamp")?.value as? String
+
+                        onLastMessageFetched(lastMessage ?: "No message", timestamp ?: "--:--")
+
+                    } else {
+                        onLastMessageFetched("No message", "--:--")
+                    }
+
+                }
+
+                override fun onCancelled(p0: DatabaseError) {
+
+                    onLastMessageFetched("No message", "--:--")
+                }
+
+
+            })
     }
 }
