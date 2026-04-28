@@ -1,6 +1,10 @@
 package com.example.whatsappclone.viewmodels
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
+import androidx.compose.animation.core.snap
 import androidx.lifecycle.ViewModel
 import com.example.whatsappclone.chat_box.ChatDesignModel
 import com.example.whatsappclone.models.Message
@@ -12,6 +16,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import okio.IOException
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 class BaseViewModel : ViewModel() {
 
@@ -294,4 +302,93 @@ class BaseViewModel : ViewModel() {
 
             })
     }
+
+
+    // Load Chat List function
+
+    fun loadChatList(
+        currentUserPhoneNumber: String,
+        onChatListLoaded: (List<ChatDesignModel>) -> Unit
+
+    ) {
+
+        val chatList = mutableListOf<ChatDesignModel>()
+        val chatRef = FirebaseDatabase.getInstance().reference
+            .child("chats")
+            .child(currentUserPhoneNumber)
+
+        chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                if (snapshot.exists()) {
+                    snapshot.children.forEach { child ->
+
+                        val phoneNumber = child.key ?: return@forEach
+                        val name = child.child("name").value as? String ?: "Unknown"
+                        val image = child.child("profileImage").value as? String
+                        val profileImageBitmap = image?.let {
+                            decodeBase64toBitmap(it)
+                        }
+                        fetchLastMessageForChat(
+                            currentUserPhoneNumber,
+                            phoneNumber
+                        ) { lastMessage, time ->
+
+                            chatList.add(
+                                ChatDesignModel(
+                                    name = name,
+                                    message = lastMessage,
+                                    time = time,
+                                    profileImage = if (profileImageBitmap != null) image else null
+                                )
+                            )
+
+                            if (chatList.size == snapshot.childrenCount.toInt()) {
+                                onChatListLoaded(chatList)
+                            }
+                        }
+
+
+                    }
+                } else {
+                    onChatListLoaded(emptyList())
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+                onChatListLoaded(emptyList())
+            }
+
+        })
+
+    }
+
+    @OptIn(ExperimentalEncodingApi::class)
+    private fun decodeBase64toBitmap(base64Image: String): Bitmap? {
+
+        return try {
+
+            val decodedBytes = Base64.decode(base64Image, android.util.Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        } catch (e: IOException) {
+            null
+        }
+
+    }
+
+    @OptIn(ExperimentalEncodingApi::class)
+    fun base64ToBitmap(base64String: String): Bitmap? {
+
+        return try {
+
+            val decodedBytes = Base64.decode(base64String, android.util.Base64.DEFAULT)
+            val inputStream: InputStream = ByteArrayInputStream(decodedBytes)
+            BitmapFactory.decodeStream(inputStream)
+        } catch (e: IOException) {
+            null
+        }
+
+    }
+
 }
