@@ -1,12 +1,10 @@
-package com.example.whatsappclone.DI
-
-import android.R
+package com.example.whatsappclone.models
 
 data class PhoneAuthUser(
 
     val userId: String = "",
     val phoneNumber: String = "",
     val name: String = "",
-    val Status: String = "",
+    val status: String = "",
     val profileImage: String = ""
 )

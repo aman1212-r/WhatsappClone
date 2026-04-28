@@ -6,7 +6,7 @@ import android.graphics.Bitmap
 import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.whatsappclone.DI.PhoneAuthUser
+import com.example.whatsappclone.models.PhoneAuthUser
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth

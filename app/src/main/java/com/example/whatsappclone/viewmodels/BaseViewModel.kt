@@ -3,6 +3,7 @@ package com.example.whatsappclone.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.whatsappclone.chat_box.ChatDesignModel
+import com.example.whatsappclone.models.Message
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -168,11 +169,43 @@ class BaseViewModel : ViewModel() {
 
             }
 
-        }else{
-            Log.e("BaseViewModel" , "no User is authenticated")
+        } else {
+            Log.e("BaseViewModel", "no User is authenticated")
         }
 
 
+    }
+
+
+    private val databaseReference = FirebaseDatabase.getInstance().reference
+
+    fun sendMessage(senderPhoneNumber: String, receiverPhoneNumber: String, messageText: String) {
+
+        val messageId = databaseReference.push().key ?: return
+
+        val message = Message(
+            senderPhoneNumber = senderPhoneNumber,
+            message = messageText,
+            timestamp = System.currentTimeMillis()
+        )
+
+        //database for sender
+
+        databaseReference.child("messages")
+            .child(senderPhoneNumber)
+            .child(receiverPhoneNumber)
+            .child(messageId)
+            .setValue(message)
+
+
+
+        //database for receiver
+
+        databaseReference.child("messages")
+            .child(receiverPhoneNumber)
+            .child(senderPhoneNumber)
+            .child(messageId)
+            .setValue(message)
     }
 
 }
