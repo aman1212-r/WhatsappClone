@@ -194,7 +194,7 @@ class PhoneAuthViewModel @Inject constructor(
         val userProfile = PhoneAuthUser(
             userId = userId,
             name = name,
-            Status = status,
+            status  = status,
             phoneNumber = Firebase.auth.currentUser?.phoneNumber ?: "",
             profileImage = encodedImage ?: ""
         )

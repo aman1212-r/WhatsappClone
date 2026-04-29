@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.whatsappclone.R
 import com.example.whatsappclone.chat_box.ChatDesignModel
 
 @Composable
@@ -28,7 +29,7 @@ fun ChatDesign(chatDesignModel: ChatDesignModel) {
     ) {
 
         Image(
-            painter = painterResource(chatDesignModel.image),
+            painter = painterResource(chatDesignModel.image ?: R.drawable.ic_profile_placeholder),
             contentDescription = null,
             modifier = Modifier
                 .size(48.dp)
@@ -48,13 +49,13 @@ fun ChatDesign(chatDesignModel: ChatDesignModel) {
             ) {
 
                 Text(
-                    text = chatDesignModel.name,
+                    text = chatDesignModel.name ?: "",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
 
                 Text(
-                    text = chatDesignModel.time,
+                    text = chatDesignModel.time ?: "",
                     fontSize = 12.sp,
                     color = Color.Gray
                 )
@@ -63,7 +64,7 @@ fun ChatDesign(chatDesignModel: ChatDesignModel) {
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = chatDesignModel.message,
+                text = chatDesignModel.message ?: "",
                 fontSize = 14.sp,
                 color = Color.Gray
             )
