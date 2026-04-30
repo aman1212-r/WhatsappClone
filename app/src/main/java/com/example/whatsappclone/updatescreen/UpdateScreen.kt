@@ -12,12 +12,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.whatsappclone.bottomnavigation.BottomNavigation
+import com.example.whatsappclone.navigation.Routes
 import com.example.whatsappclone.R
 
 @Composable
-@Preview(showSystemUi = true)
-fun UpdateScreen() {
+fun UpdateScreen(navHostController: NavHostController) {
 
     val sampleStatus = listOf(
         StatusData(R.drawable.bhuvan_bam, "Bhumi Bam", "10:00"),
@@ -34,7 +35,12 @@ fun UpdateScreen() {
     Scaffold(
         topBar = { TopBar() },
 
-        bottomBar = { BottomNavigation() },
+        bottomBar = {
+            BottomNavigation(
+                navHostController = navHostController,
+                currentRoute = Routes.UpdateScreen
+            )
+        },
 
         floatingActionButton = {
             FloatingActionButton(

@@ -14,12 +14,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.whatsappclone.R
 import com.example.whatsappclone.bottomnavigation.BottomNavigation
+import com.example.whatsappclone.navigation.Routes
 
-@Preview(showSystemUi = true)
 @Composable
-fun CommunitiesScreen() {
+fun CommunitiesScreen(navHostController: NavHostController) {
 
     var isSearching by remember { mutableStateOf(false) }
     var search by remember { mutableStateOf("") }
@@ -112,7 +113,10 @@ fun CommunitiesScreen() {
 
         },
         bottomBar = {
-            BottomNavigation()
+            BottomNavigation(
+                navHostController = navHostController,
+                currentRoute = Routes.CommunitiesScreen
+            )
         }
     ) { innerPadding ->
 

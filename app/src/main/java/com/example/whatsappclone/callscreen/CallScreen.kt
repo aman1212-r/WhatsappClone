@@ -14,12 +14,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.whatsappclone.R
 import com.example.whatsappclone.bottomnavigation.BottomNavigation
+import com.example.whatsappclone.navigation.Routes
 
-@Preview(showSystemUi = true)
 @Composable
-fun CallScreen() {
+fun CallScreen(navHostController: NavHostController) {
 
     val sampleCall = listOf(
         Call(
@@ -29,7 +30,7 @@ fun CallScreen() {
             isMissed = true
         ), Call(
             image = R.drawable.boy1,
-            name = "Sharuk khan",
+            name = "Sharukh khan",
             time = "Today, 10:00 AM",
             isMissed = false
         ), Call(
@@ -137,7 +138,10 @@ fun CallScreen() {
         },
 
         bottomBar = {
-            BottomNavigation()
+            BottomNavigation(
+                navHostController = navHostController,
+                currentRoute = Routes.CallScreen
+            )
         },
 
 

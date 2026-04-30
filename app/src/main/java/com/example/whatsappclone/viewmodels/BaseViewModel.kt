@@ -6,8 +6,10 @@ import android.util.Base64
 import android.util.Log
 import androidx.compose.animation.core.snap
 import androidx.lifecycle.ViewModel
+import com.example.whatsappclone.R
 import com.example.whatsappclone.chat_box.ChatDesignModel
 import com.example.whatsappclone.models.Message
+import com.example.whatsappclone.models.PhoneAuthUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -45,7 +47,21 @@ class BaseViewModel : ViewModel() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
 
-                        val user = snapshot.children.first().getValue(ChatDesignModel::class.java)
+                        val userSnapshot = snapshot.children.firstOrNull()
+                        val user = userSnapshot?.getValue(PhoneAuthUser::class.java)?.let {
+                            ChatDesignModel(
+                                name = it.name,
+                                phoneNumber = it.phoneNumber,
+                                image = R.drawable.ic_profile_placeholder,
+                                userId = it.userId,
+                                profileImage = it.profileImage
+                            )
+                        }
+
+                        if (user?.userId == currentUser.uid) {
+                            callback(null)
+                            return
+                        }
 
                         callback(user)
 
@@ -71,35 +87,34 @@ class BaseViewModel : ViewModel() {
 
         val chatref = FirebaseDatabase.getInstance().getReference("users/$userId/chats")
 
-        chatref.orderByChild("userId").equalTo(userId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+        chatref.addListenerForSingleValueEvent(object : ValueEventListener {
 
-                override fun onDataChange(snapshot: DataSnapshot) {
+            override fun onDataChange(snapshot: DataSnapshot) {
 
-                    val chatList = mutableListOf<ChatDesignModel>()
+                val chatList = mutableListOf<ChatDesignModel>()
 
-                    for (childsnapshot in snapshot.children) {
+                for (childsnapshot in snapshot.children) {
 
-                        val chat = childsnapshot.getValue(ChatDesignModel::class.java)
+                    val chat = childsnapshot.getValue(ChatDesignModel::class.java)
 
-                        if (chat != null) {
-                            chatList.add(chat)
-                        }
+                    if (chat != null) {
+                        chatList.add(chat.copy(image = chat.image ?: R.drawable.ic_profile_placeholder))
                     }
-
-                    callback(chatList)
-                    _chatList.value = chatList
                 }
 
-                override fun onCancelled(error: DatabaseError) {
+                callback(chatList)
+                _chatList.value = chatList
+            }
 
-                    Log.e(
-                        "BaseViewModel", "Error Fetching Chats: ${error.message}"
-                    )
+            override fun onCancelled(error: DatabaseError) {
 
-                    callback(emptyList())
-                }
-            })
+                Log.e(
+                    "BaseViewModel", "Error Fetching Chats: ${error.message}"
+                )
+
+                callback(emptyList())
+            }
+        })
     }
 
     private val _chatList = MutableStateFlow<List<ChatDesignModel>>(emptyList())
@@ -121,38 +136,39 @@ class BaseViewModel : ViewModel() {
 
         if (currentUserId != null) {
 
-            val chatRef = FirebaseDatabase.getInstance().getReference("chats")
+            val chatRef = FirebaseDatabase.getInstance().getReference("users/$currentUserId/chats")
 
-            chatRef.orderByChild("userId").equalTo(currentUserId)
-                .addValueEventListener(object : ValueEventListener {
+            chatRef.addValueEventListener(object : ValueEventListener {
 
-                    override fun onDataChange(snapshot: DataSnapshot) {
+                override fun onDataChange(snapshot: DataSnapshot) {
 
-                        val chatList = mutableListOf<ChatDesignModel>()
-                        for (childSnapshot in snapshot.children) {
+                    val chatList = mutableListOf<ChatDesignModel>()
+                    for (childSnapshot in snapshot.children) {
 
 
-                            val chat = childSnapshot.getValue(ChatDesignModel::class.java)
+                        val chat = childSnapshot.getValue(ChatDesignModel::class.java)
 
-                            if (chat != null) {
+                        if (chat != null) {
 
-                                chatList.add(chat)
+                            chatList.add(
+                                chat.copy(image = chat.image ?: R.drawable.ic_profile_placeholder)
+                            )
 
-                            }
                         }
-
-                        _chatList.value = chatList
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
+                    _chatList.value = chatList
+                }
 
-                        Log.e(
-                            "BaseViewModel", "Error Fetching Chats: ${error.message}"
-                        )
+                override fun onCancelled(error: DatabaseError) {
 
-                    }
+                    Log.e(
+                        "BaseViewModel", "Error Fetching Chats: ${error.message}"
+                    )
 
-                })
+                }
+
+            })
         }
     }
 
@@ -162,19 +178,40 @@ class BaseViewModel : ViewModel() {
     fun addChat(newChat: ChatDesignModel) {
 
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-
         if (currentUserId != null) {
 
-            val newChatRef = FirebaseDatabase.getInstance().getReference("chats").push()
-            val chatWithUser = newChat.copy(currentUserId)
+            val userRef = FirebaseDatabase.getInstance().getReference("users")
+            val chatKey = newChat.userId ?: newChat.phoneNumber ?: return
+            val currentUserChatRef = userRef.child(currentUserId).child("chats").child(chatKey)
+            val chatWithUser = newChat.copy(
+                image = newChat.image ?: R.drawable.ic_profile_placeholder
+            )
 
-            newChatRef.setValue(chatWithUser).addOnSuccessListener {
+            currentUserChatRef.setValue(chatWithUser).addOnSuccessListener {
+                _chatList.value = (_chatList.value + chatWithUser).distinctBy {
+                    it.userId ?: it.phoneNumber ?: it.name
+                }
                 Log.d("BaseViewModel", "Chat added successfully to Firebase")
             }.addOnFailureListener {
 
                     exception ->
                 Log.e("BaseViewModel", "Failed to add chat: ${exception.message}")
 
+            }
+
+            userRef.child(currentUserId).get().addOnSuccessListener { snapshot ->
+                val currentUserProfile = snapshot.getValue(PhoneAuthUser::class.java)
+                if (currentUserProfile != null && !newChat.userId.isNullOrEmpty()) {
+                    val reverseChat = ChatDesignModel(
+                        name = currentUserProfile.name,
+                        phoneNumber = currentUserProfile.phoneNumber,
+                        image = R.drawable.ic_profile_placeholder,
+                        userId = currentUserId,
+                        profileImage = currentUserProfile.profileImage
+                    )
+                    userRef.child(newChat.userId).child("chats").child(currentUserId)
+                        .setValue(reverseChat)
+                }
             }
 
         } else {
@@ -281,12 +318,15 @@ class BaseViewModel : ViewModel() {
                     if (snapshot.exists()) {
 
                         val lastMessage =
-                            snapshot.children.firstOrNull()?.child("messages")?.value as? String
+                            snapshot.children.firstOrNull()?.child("message")?.value as? String
 
                         val timestamp =
-                            snapshot.children.firstOrNull()?.child("timestamp")?.value as? String
+                            snapshot.children.firstOrNull()?.child("timestamp")?.getValue(Long::class.java)
 
-                        onLastMessageFetched(lastMessage ?: "No message", timestamp ?: "--:--")
+                        onLastMessageFetched(
+                            lastMessage ?: "No message",
+                            timestamp?.let { formatTimestamp(it) } ?: "--:--"
+                        )
 
                     } else {
                         onLastMessageFetched("No message", "--:--")
@@ -389,6 +429,11 @@ class BaseViewModel : ViewModel() {
             null
         }
 
+    }
+
+    private fun formatTimestamp(timestamp: Long): String {
+        val formatter = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.getDefault())
+        return formatter.format(java.util.Date(timestamp))
     }
 
 }

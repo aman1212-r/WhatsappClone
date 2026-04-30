@@ -16,8 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.whatsappclone.R
 import com.example.whatsappclone.chat_box.ChatDesignModel
-
 @Composable
+
 
 fun ChatDesign(chatDesignModel: ChatDesignModel) {
 

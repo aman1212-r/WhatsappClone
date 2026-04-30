@@ -1,6 +1,7 @@
 package com.example.whatsappclone.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -11,12 +12,14 @@ import com.example.whatsappclone.profile.ProfileScreen
 import com.example.whatsappclone.splashscreen.SplashScreen
 import com.example.whatsappclone.updatescreen.UpdateScreen
 import com.example.whatsappclone.userregistrationscreen.UserRegistrationScreen
+import com.example.whatsappclone.viewmodels.BaseViewModel
 import com.example.whatsappclone.welcomescreen.WelcomeScreen
 
 @Composable
 fun WhatsAppNavigationSystem() {
 
     val navController = rememberNavController()
+    val homeBaseViewModel: BaseViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -36,23 +39,30 @@ fun WhatsAppNavigationSystem() {
         }
 
         composable<Routes.HomeScreen> {
-            Homescreen()
+            Homescreen(
+                navHostController = navController,
+                homeBaseViewModel = homeBaseViewModel
+            )
         }
 
         composable<Routes.UpdateScreen> {
-            UpdateScreen()
+            UpdateScreen(navHostController = navController)
         }
 
         composable<Routes.CommunitiesScreen> {
-            CommunitiesScreen()
+            CommunitiesScreen(navHostController = navController)
         }
 
         composable<Routes.CallScreen> {
-            CallScreen()
+            CallScreen(navHostController = navController)
         }
 
         composable<Routes.ProfileScreen> {
             ProfileScreen(navHostController = navController )
+        }
+
+        composable<Routes.SettingScreen> {
+            ProfileScreen(navHostController = navController)
         }
 
 
@@ -60,7 +70,6 @@ fun WhatsAppNavigationSystem() {
 
     }
 }
-
 
 
 

@@ -40,7 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.example.whatsappclone.R
 import com.example.whatsappclone.navigation.Routes
 import com.example.whatsappclone.viewmodels.PhoneAuthViewModel
@@ -123,8 +123,8 @@ fun ProfileScreen(
                 }
 
                 profileImageUri != null -> {
-                    Image(
-                        painter = rememberImagePainter(profileImageUri),
+                    AsyncImage(
+                        model = profileImageUri,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
