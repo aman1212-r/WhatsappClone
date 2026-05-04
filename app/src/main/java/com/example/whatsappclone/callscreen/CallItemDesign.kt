@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.CallMade
+import androidx.compose.material.icons.automirrored.rounded.CallMissed
+import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -32,8 +36,8 @@ fun CallItemDesign(call: Call) {
 
     Row(
         modifier = Modifier
-            .statusBarsPadding()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
@@ -62,10 +66,10 @@ fun CallItemDesign(call: Call) {
 
             Row() {
                 Icon(
-                    painter = painterResource(R.drawable.baseline_call_missed_24),
+                    imageVector = if (call.isMissed) Icons.AutoMirrored.Rounded.CallMissed else Icons.AutoMirrored.Rounded.CallMade,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(16.dp),
+                        .size(18.dp),
                     tint = if (call.isMissed) Color.Red else colorResource(R.color.light_green)
                 )
 
@@ -86,10 +90,11 @@ fun CallItemDesign(call: Call) {
                 .align(Alignment.CenterEnd)) {
 
                 Icon(
-                    painter = painterResource(R.drawable.telephone),
+                    imageVector = Icons.Rounded.Call,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(22.dp),
+                    tint = colorResource(R.color.light_green)
                 )
             }
         }

@@ -2,10 +2,12 @@ package com.example.whatsappclone.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.toRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.whatsappclone.callscreen.CallScreen
+import com.example.whatsappclone.chat_box.ChatRoomScreen
 import com.example.whatsappclone.communitiesscreen.CommunitiesScreen
 import com.example.whatsappclone.homescreen.Homescreen
 import com.example.whatsappclone.profile.ProfileScreen
@@ -61,6 +63,17 @@ fun WhatsAppNavigationSystem() {
             ProfileScreen(navHostController = navController )
         }
 
+        composable<Routes.ChatRoom> { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.ChatRoom>()
+            ChatRoomScreen(
+                navHostController = navController,
+                name = route.name,
+                phoneNumber = route.phoneNumber,
+                image = route.image,
+                baseViewModel = homeBaseViewModel
+            )
+        }
+
         composable<Routes.SettingScreen> {
             ProfileScreen(navHostController = navController)
         }
@@ -70,6 +83,5 @@ fun WhatsAppNavigationSystem() {
 
     }
 }
-
 
 

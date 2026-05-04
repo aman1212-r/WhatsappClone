@@ -3,21 +3,22 @@ package com.example.whatsappclone.callscreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AddIcCall
+import androidx.compose.material.icons.rounded.PhotoCamera
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.whatsappclone.R
 import com.example.whatsappclone.bottomnavigation.BottomNavigation
 import com.example.whatsappclone.navigation.Routes
+import com.example.whatsappclone.ui.components.SearchableScreenTopBar
+import com.example.whatsappclone.ui.components.TopBarMenuItem
 
 @Composable
 fun CallScreen(navHostController: NavHostController) {
@@ -56,85 +57,43 @@ fun CallScreen(navHostController: NavHostController) {
     var isSearching by remember { mutableStateOf(false) }
     var search by remember { mutableStateOf("") }
     var showMenu by remember { mutableStateOf(false) }
+    val menuItems = listOf(
+        TopBarMenuItem(
+            label = "Settings",
+            onClick = { showMenu = false }
+        )
+    )
 
     Scaffold(
 
         topBar = {
-
-            Column {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
+            SearchableScreenTopBar(
+                title = "Calls",
+                isSearching = isSearching,
+                searchText = search,
+                onSearchTextChange = { search = it },
+                onSearchToggle = {
                     if (isSearching) {
-                        TextField(
-                            value = search,
-                            onValueChange = { search = it },
-                            placeholder = { Text("Search") },
-                            modifier = Modifier.weight(1f),
-                            singleLine = true,
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            )
-                        )
+                        isSearching = false
+                        search = ""
                     } else {
-                        Text(
-                            text = "Calls",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 8.dp)
-                        )
+                        isSearching = true
                     }
-
-                    if (isSearching) {
-                        IconButton(onClick = {
-                            isSearching = false
-                            search = ""
-                        }) {
-                            Icon(
-                                painter = painterResource(R.drawable.cross),
-                                contentDescription = null
-                            )
-                        }
-                    } else {
-
-                        IconButton(onClick = { isSearching = true }) {
-                            Icon(
-                                painter = painterResource(R.drawable.search),
-                                contentDescription = null
-                            )
-                        }
-
-                        Box {
-                            IconButton(onClick = { showMenu = true }) {
-                                Icon(
-                                    painter = painterResource(R.drawable.more),
-                                    contentDescription = null
-                                )
-                            }
-
-                            DropdownMenu(
-                                expanded = showMenu, onDismissRequest = { showMenu = false }) {
-                                DropdownMenuItem(
-                                    text = { Text("Settings") },
-                                    onClick = { showMenu = false })
-                            }
-                        }
+                },
+                menuExpanded = showMenu,
+                onMenuToggle = { showMenu = true },
+                onMenuDismiss = { showMenu = false },
+                menuItems = menuItems,
+                leadingActions = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Rounded.PhotoCamera,
+                            contentDescription = "Camera",
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                 }
-
-                HorizontalDivider(thickness = 0.5.dp)
-            }
+            )
         },
 
         bottomBar = {
@@ -149,11 +108,12 @@ fun CallScreen(navHostController: NavHostController) {
             FloatingActionButton(
                 onClick = { },
                 containerColor = colorResource(id = R.color.light_green),
-                contentColor = Color.White
+                contentColor = androidx.compose.ui.graphics.Color.White
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.add_call),
-                    contentDescription = "Camera"
+                    imageVector = Icons.Rounded.AddIcCall,
+                    contentDescription = "Start call",
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -179,7 +139,7 @@ fun CallScreen(navHostController: NavHostController) {
             ) {
                 Text(
                     text = "Start a new call",
-                    color = Color.White,
+                    color = androidx.compose.ui.graphics.Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )

@@ -3,21 +3,21 @@ package com.example.whatsappclone.communitiesscreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.whatsappclone.R
 import com.example.whatsappclone.bottomnavigation.BottomNavigation
 import com.example.whatsappclone.navigation.Routes
+import com.example.whatsappclone.ui.components.SearchableScreenTopBar
+import com.example.whatsappclone.ui.components.TopBarMenuItem
 
 @Composable
 fun CommunitiesScreen(navHostController: NavHostController) {
@@ -32,85 +32,33 @@ fun CommunitiesScreen(navHostController: NavHostController) {
         Communities(R.drawable.img, "Jetpack Compose", "121"),
     )
 
+    val menuItems = listOf(
+        TopBarMenuItem(
+            label = "Settings",
+            onClick = { showMenu = false }
+        )
+    )
+
     Scaffold(
         topBar = {
-
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                if (isSearching) {
-                    TextField(
-                        value = search,
-                        onValueChange = { search = it },
-                        placeholder = { Text("Search") },
-                        modifier = Modifier.weight(1f),
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        )
-                    )
-                } else {
-                    Text(
-                        text = "Communities",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 8.dp)
-                    )
-                }
-
-                if (isSearching) {
-                    IconButton(onClick = {
+            SearchableScreenTopBar(
+                title = "Communities",
+                isSearching = isSearching,
+                searchText = search,
+                onSearchTextChange = { search = it },
+                onSearchToggle = {
+                    if (isSearching) {
                         isSearching = false
                         search = ""
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.cross),
-                            contentDescription = "Close"
-                        )
+                    } else {
+                        isSearching = true
                     }
-                } else {
-
-                    IconButton(onClick = { isSearching = true }) {
-                        Icon(
-                            painter = painterResource(R.drawable.search),
-                            contentDescription = "Search"
-                        )
-                    }
-
-                    Box {
-                        IconButton(onClick = { showMenu = true }) {
-                            Icon(
-                                painter = painterResource(R.drawable.more),
-                                contentDescription = "More"
-                            )
-                        }
-
-                        DropdownMenu(
-                            expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("Settings") },
-                                onClick = { showMenu = false }
-                            )
-                        }
-                    }
-                }
-            }
-
-            HorizontalDivider()
-
+                },
+                menuExpanded = showMenu,
+                onMenuToggle = { showMenu = true },
+                onMenuDismiss = { showMenu = false },
+                menuItems = menuItems
+            )
         },
         bottomBar = {
             BottomNavigation(
@@ -135,6 +83,12 @@ fun CommunitiesScreen(navHostController: NavHostController) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
+                Icon(
+                    imageVector = Icons.Rounded.Groups,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Start a new Community",
                     fontSize = 16.sp,

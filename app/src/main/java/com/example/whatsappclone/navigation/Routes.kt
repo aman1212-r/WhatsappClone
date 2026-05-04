@@ -28,11 +28,16 @@ sealed class Routes {
     @Serializable
     data object ProfileScreen : Routes()
 
+    @Serializable
+    data class ChatRoom(
+        val name: String,
+        val phoneNumber: String,
+        val image: Int? = null
+    ) : Routes()
 
     @Serializable
     data object SettingScreen : Routes ()
 }
-
 
 
 

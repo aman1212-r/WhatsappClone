@@ -74,12 +74,49 @@ fun Homescreen(
         }
     }
 
-    val filteredChatData = remember(chatData, searchText) {
+    val demoChats = remember {
+        listOf(
+            ChatDesignModel(
+                name = "Riya Sharma",
+                phoneNumber = "+919876543210",
+                image = R.drawable.rashmika,
+                time = "09:12 AM",
+                message = "Hey, are we still meeting today?"
+            ),
+            ChatDesignModel(
+                name = "Akshay Kumar",
+                phoneNumber = "+919800000111",
+                image = R.drawable.akshay_kumar,
+                time = "10:45 AM",
+                message = "Send me the update when you're free."
+            ),
+            ChatDesignModel(
+                name = "Mr Beast",
+                phoneNumber = "+919811122233",
+                image = R.drawable.mrbeast,
+                time = "Yesterday",
+                message = "Let's make the demo look sharp."
+            ),
+            ChatDesignModel(
+                name = "Carry",
+                phoneNumber = "+919822233344",
+                image = R.drawable.carryminati,
+                time = "Yesterday",
+                message = "Bro this UI is looking nice."
+            )
+        )
+    }
+
+    val homeChats = remember(chatData, demoChats) {
+        (demoChats + chatData).distinctBy { it.phoneNumber ?: it.name }
+    }
+
+    val filteredChatData = remember(homeChats, searchText) {
         val query = searchText.trim()
         if (query.isEmpty()) {
-            chatData
+            homeChats
         } else {
-            chatData.filter { chat ->
+            homeChats.filter { chat ->
                 val nameMatches = chat.name?.contains(query, ignoreCase = true) == true
                 val phoneMatches = chat.phoneNumber?.contains(query, ignoreCase = true) == true
                 nameMatches || phoneMatches
@@ -376,7 +413,19 @@ fun Homescreen(
                         items = filteredChatData,
                         key = { chat -> chat.userId ?: chat.phoneNumber ?: chat.name ?: "" }
                     ) { chat ->
-                        ChatDesign(chatDesignModel = chat)
+                        Box(
+                            modifier = Modifier.clickable {
+                                navHostController.navigate(
+                                    Routes.ChatRoom(
+                                        name = chat.name ?: "Chat",
+                                        phoneNumber = chat.phoneNumber ?: "",
+                                        image = chat.image
+                                    )
+                                )
+                            }
+                        ) {
+                            ChatDesign(chatDesignModel = chat)
+                        }
                     }
                 }
             }
