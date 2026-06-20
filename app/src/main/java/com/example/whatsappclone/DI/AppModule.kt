@@ -1,4 +1,4 @@
-package com.example.whatsappclone.dI
+package com.example.whatsappclone.DI
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase

@@ -1,4 +1,4 @@
-package com.example.whatsappclone.dI
+package com.example.whatsappclone.DI
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
